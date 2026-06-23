@@ -15,8 +15,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATABASE_URL = "postgresql://postgres:123@127.0.0.1:5433/bill_splitter"
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:123@127.0.0.1:5433/bill_splitter")
 engine = create_engine(DATABASE_URL)
+
+# Фикс для Render
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 # --- БЛОК АВТОСОЗДАНИЯ ТАБЛИЦ ПРИ ЗАПУСКЕ ---
 SQL_CREATE_TABLES = """
